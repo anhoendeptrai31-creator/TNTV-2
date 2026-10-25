@@ -1,0 +1,726 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TNTV 2 - Ôn tập Tiếng Việt</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#eef3ff;
+    padding:20px;
+    margin:0;
+    color:#24324a;
+}
+
+h1,h2,h3{color:#2459a9}
+
+.box{
+    background:#fff;
+    padding:20px;
+    border-radius:14px;
+    margin:20px auto;
+    max-width:1000px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+}
+
+button{
+    padding:11px 18px;
+    background:#3498db;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+    margin:5px 3px;
+}
+
+button:hover{background:#2475b5}
+
+input[type="password"]{
+    padding:12px;
+    width:100%;
+    max-width:350px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    margin-top:8px;
+    font-size:16px;
+}
+
+.hidden{display:none!important}
+
+#timer{
+    color:red;
+    font-weight:bold;
+    font-size:22px;
+}
+
+.q{
+    margin:16px 0;
+    padding:15px;
+    background:#f6f9ff;
+    border:1px solid #e1eaff;
+    border-radius:10px;
+}
+
+.q label{
+    display:block;
+    padding:7px;
+    cursor:pointer;
+    line-height:1.5;
+}
+
+.q label:hover{
+    background:#eaf2ff;
+    border-radius:6px;
+}
+
+.q input{margin-right:8px}
+
+table{
+    border-collapse:collapse;
+    width:100%;
+    background:white;
+}
+
+th,td{
+    border:1px solid #cbd5e1;
+    padding:10px;
+    text-align:center;
+}
+
+th{background:#dceaff}
+
+.table-wrap{overflow-x:auto}
+
+.notice{
+    background:#fff8dc;
+    border-left:5px solid #f0b429;
+    padding:12px;
+    border-radius:6px;
+    margin:15px 0;
+}
+
+@media(max-width:600px){
+    body{padding:10px}
+    .box{padding:15px}
+    button{width:100%;margin:5px 0}
+}
+</style>
+</head>
+
+<body>
+
+<h1 style="text-align:center">📘 TNTV 2</h1>
+
+<h2 style="text-align:center">
+    👩‍🏫 Giáo viên: Phạm Thị Ngần
+</h2>
+
+<h3 style="text-align:center">
+    📖 Đề Tiếng Việt 1 - Mã 2
+</h3>
+
+<!-- ĐĂNG NHẬP HỌC SINH -->
+<div class="box" id="loginBox">
+
+    <h2>🔐 Vào làm bài Tiếng Việt</h2>
+
+    <p>Chào mừng các em đến với đề ôn tập Tiếng Việt số 2!</p>
+
+    <p>Hãy nhập mã truy cập do giáo viên cung cấp để bắt đầu.</p>
+
+    <label for="studentCode"><b>🔑 Mã truy cập:</b></label>
+    <br>
+
+    <input
+        type="password"
+        id="studentCode"
+        placeholder="Nhập mã truy cập"
+        autocomplete="off"
+    >
+
+    <br><br>
+
+    <button onclick="startTest()">▶️ Vào làm bài</button>
+
+    <button onclick="showTeacher()">👩‍🏫 Giáo viên</button>
+
+</div>
+
+<!-- KHU VỰC LÀM BÀI -->
+<div class="box hidden" id="testBox">
+
+    <h2>📝 Đề Tiếng Việt 1 - Mã 2</h2>
+
+    <div class="notice">
+        <b>⏱ Thời gian còn lại:</b>
+        <span id="timer">30:00</span>
+        <br>
+        Hãy đọc kỹ câu hỏi và chọn đáp án đúng nhất.
+    </div>
+
+    <div id="quiz"></div>
+
+    <button onclick="submitTest()">📤 Nộp bài</button>
+
+</div>
+
+<!-- KẾT QUẢ -->
+<div class="box hidden" id="resultBox">
+
+    <h2>🎉 Kết quả bài làm</h2>
+
+    <h3 id="result"></h3>
+
+    <p id="resultTime"></p>
+
+    <button onclick="location.reload()">🔁 Về trang đầu</button>
+
+</div>
+
+<!-- ĐĂNG NHẬP GIÁO VIÊN -->
+<div class="box hidden" id="teacherLoginBox">
+
+    <h2>🔐 Khu vực giáo viên</h2>
+
+    <p>Vui lòng nhập mã giáo viên để xem bảng điểm.</p>
+
+    <label for="teacherCode"><b>Mã giáo viên:</b></label>
+    <br>
+
+    <input
+        type="password"
+        id="teacherCode"
+        placeholder="Nhập mã giáo viên"
+        autocomplete="off"
+    >
+
+    <br><br>
+
+    <button onclick="verifyTeacher()">🔓 Đăng nhập</button>
+
+    <button onclick="backHome()">⬅️ Quay lại</button>
+
+</div>
+
+<!-- BẢNG ĐIỂM -->
+<div class="box hidden" id="teacherBox">
+
+    <h2>📊 BẢNG KẾT QUẢ TNTV 2</h2>
+
+    <p id="totalResults"></p>
+
+    <button onclick="renderScores()">🔄 Làm mới</button>
+
+    <button onclick="exportScores()">📥 Tải bảng điểm CSV</button>
+
+    <button onclick="backHome()">⬅️ Quay lại</button>
+
+    <br><br>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Học sinh</th>
+                    <th>Điểm</th>
+                    <th>Thời gian nộp</th>
+                </tr>
+            </thead>
+
+            <tbody id="scoreTable"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+
+// =====================================
+// 1. MÃ TRUY CẬP
+// =====================================
+
+const STUDENT_CODE = "CoNgan0204";
+const TEACHER_CODE = "GV0204";
+
+// Khóa lưu điểm riêng cho TNTV 2
+const STORAGE_KEY = "scores_TNTV2";
+
+let time = 1800;
+let timer = null;
+let currentStudent = "Học sinh";
+let submitted = false;
+
+const quiz = document.getElementById("quiz");
+const timerSpan = document.getElementById("timer");
+
+// =====================================
+// 2. DỮ LIỆU 30 CÂU HỎI TNTV 2
+// =====================================
+
+const quizData = [
+
+{q:"Từ nào viết đúng chính tả?",a:["sạch đẹp","xạch đẹp","sạch đệp","xạch đệp"],d:0},
+
+{q:"Từ nào đúng?",a:["trời mưa","chời mưa","trời mư a","chời mư a"],d:0},
+
+{q:"Chọn từ đúng:",a:["con sóc","con xóc","con sót","con xót"],d:0},
+
+{q:"Từ nào đúng?",a:["sông Hồng","xông Hồng","sông Hòn","xông Hòn"],d:0},
+
+{q:"Từ nào đúng chính tả?",a:["trường em","chường em","trường êm","chường êm"],d:0},
+
+{q:"Từ nào đúng?",a:["sư tử","xư tử","sư tữ","xư tữ"],d:0},
+
+{q:"Chọn từ đúng:",a:["trái bóng","chái bóng","trái bón","chái bón"],d:0},
+
+{q:"Từ nào đúng?",a:["cái chăn","cái trăn","cái chăn","cái trăn"],d:0},
+
+{q:"Từ nào đúng chính tả?",a:["sân trường","xân trường","sân chường","xân chường"],d:0},
+
+{q:"Từ nào đúng?",a:["trống trường","chống trường","trống chường","chống chường"],d:0},
+
+{q:"Chọn từ đúng:",a:["xe buýt","se buýt","xe bút","se bút"],d:0},
+
+{q:"Từ nào đúng?",a:["sáng sớm","xáng xớm","sáng xớm","xáng sớm"],d:0},
+
+{q:"Từ nào viết đúng?",a:["chim sẻ","chim xẻ","chim sẻ","chim xẻ"],d:0},
+
+{q:"Chọn từ đúng:",a:["trời nắng","chời nắng","trời nắn","chời nắn"],d:0},
+
+{q:"Từ nào đúng?",a:["cây xoài","cây soài","cây xoài","cây soài"],d:0},
+
+{q:"Câu nào viết đúng?",a:[
+"Em yêu trường em.",
+"Em yêu chường em.",
+"Em yêu chường êm.",
+"Em yêu trường êm."
+],d:0},
+
+{q:"Câu nào đúng?",a:[
+"Bé Lan quét nhà.",
+"Bé Lan quyết nhà.",
+"Bé Lan quét nhả.",
+"Bé Lan quyết nhả."
+],d:0},
+
+{q:"Câu nào đúng?",a:[
+"Chúng em chăm học.",
+"Chúng em trăm học.",
+"Chúng em chăm hộc.",
+"Chúng em trăm hộc."
+],d:0},
+
+{q:"Từ nào đúng?",a:["sư tử","xư tử","sư tử","xư tử"],d:0},
+
+{q:"Từ nào đúng?",a:["trái cây","chái cây","trái cầy","chái cầy"],d:0},
+
+{q:"Từ nào đúng?",a:["sách vở","xách vở","sách vở","xách vở"],d:0},
+
+{q:"Từ nào đúng?",a:["trăng sáng","chăng sáng","trăng xáng","chăng xáng"],d:0},
+
+{q:"Từ nào đúng?",a:["sân chơi","xân chơi","sân chới","xân chới"],d:0},
+
+{q:"Từ nào đúng?",a:["trẻ em","chẻ em","trẻ êm","chẻ êm"],d:0},
+
+{q:"Từ nào đúng?",a:["sữa tươi","xữa tươi","sữa tưi","xữa tưi"],d:0},
+
+{q:"Câu nào đúng?",a:[
+"Bé Nam rửa tay sạch.",
+"Bé Nam rửa tay xạch.",
+"Bé Nam rửa tay sạnh.",
+"Bé Nam rửa tay xạnh."
+],d:0},
+
+{q:"Câu nào đúng?",a:[
+"Trời hôm nay rất đẹp.",
+"Chời hôm nay rất đẹp.",
+"Trời hôm nay rất đệp.",
+"Chời hôm nay rất đệp."
+],d:0},
+
+{q:"Câu nào đúng?",a:[
+"Chúng em xếp hàng.",
+"Chúng em sép hàng.",
+"Chúng em xép hàng.",
+"Chúng em sép hàn."
+],d:0},
+
+{q:"Từ nào đúng?",a:["sân bóng","xân bóng","sân bống","xân bống"],d:0},
+
+{q:"Từ nào đúng?",a:["trái tim","chái tim","trái tim","chái tim"],d:0}
+
+];
+
+// =====================================
+// 3. HIỂN THỊ CÂU HỎI
+// =====================================
+
+quizData.forEach((q,i)=>{
+
+    let html = `
+        <div class="q">
+            <b>Câu ${i+1}:</b> ${q.q}
+            <br><br>
+    `;
+
+    q.a.forEach((ans,j)=>{
+
+        html += `
+            <label>
+                <input type="radio" name="q${i}" value="${j}">
+                ${ans}
+            </label>
+        `;
+
+    });
+
+    html += "</div>";
+
+    quiz.innerHTML += html;
+
+});
+
+// =====================================
+// 4. ĐỌC KẾT QUẢ ĐÃ LƯU
+// =====================================
+
+function getScores(){
+
+    try{
+        return JSON.parse(
+            localStorage.getItem(STORAGE_KEY) || "[]"
+        );
+    }catch(error){
+        return [];
+    }
+
+}
+
+// =====================================
+// 5. HỌC SINH ĐĂNG NHẬP
+// =====================================
+
+function startTest(){
+
+    const code = document
+        .getElementById("studentCode")
+        .value
+        .trim();
+
+    if(code !== STUDENT_CODE){
+
+        alert("❌ Mã truy cập không đúng! Em hãy nhập lại.");
+
+        document.getElementById("studentCode").value = "";
+
+        return;
+
+    }
+
+    currentStudent = "Học sinh";
+    submitted = false;
+    time = 1800;
+
+    // Xóa lựa chọn cũ
+    document.querySelectorAll(
+        '#quiz input[type="radio"]'
+    ).forEach(input=>{
+        input.checked = false;
+    });
+
+    document.getElementById("loginBox")
+        .classList.add("hidden");
+
+    document.getElementById("testBox")
+        .classList.remove("hidden");
+
+    timerSpan.innerText = "30:00";
+
+    clearInterval(timer);
+
+    timer = setInterval(()=>{
+
+        time--;
+
+        const m = Math.floor(time/60);
+        const s = time%60;
+
+        timerSpan.innerText =
+            m + ":" + (s<10 ? "0" : "") + s;
+
+        if(time <= 0){
+
+            clearInterval(timer);
+
+            submitTest(true);
+
+        }
+
+    },1000);
+
+}
+
+// =====================================
+// 6. NỘP BÀI VÀ LƯU ĐIỂM
+// =====================================
+
+function submitTest(autoSubmit = false){
+
+    if(submitted) return;
+
+    if(!autoSubmit){
+
+        const confirmed = confirm(
+            "Em có chắc chắn muốn nộp bài không?"
+        );
+
+        if(!confirmed) return;
+
+    }
+
+    submitted = true;
+
+    clearInterval(timer);
+
+    let score = 0;
+
+    quizData.forEach((q,i)=>{
+
+        const selected = document.querySelector(
+            `input[name="q${i}"]:checked`
+        );
+
+        if(
+            selected &&
+            Number(selected.value) === q.d
+        ){
+            score++;
+        }
+
+    });
+
+    const now = new Date();
+
+    const data = getScores();
+
+    data.push({
+
+        name: currentStudent,
+
+        score: score + "/30",
+
+        time: now.toLocaleString("vi-VN"),
+
+        timestamp: now.getTime()
+
+    });
+
+    try{
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(data)
+        );
+
+    }catch(error){
+
+        alert("Không thể lưu kết quả trên trình duyệt.");
+
+    }
+
+    document.getElementById("testBox")
+        .classList.add("hidden");
+
+    document.getElementById("resultBox")
+        .classList.remove("hidden");
+
+    document.getElementById("result").innerText =
+        "🎉 Em đạt " + score + "/30 điểm!";
+
+    document.getElementById("resultTime").innerText =
+        "🕒 Thời gian nộp bài: " +
+        now.toLocaleString("vi-VN");
+
+    if(autoSubmit){
+        alert("⏰ Đã hết giờ! Bài làm đã được tự động nộp.");
+    }
+
+}
+
+// =====================================
+// 7. MỞ ĐĂNG NHẬP GIÁO VIÊN
+// =====================================
+
+function showTeacher(){
+
+    clearInterval(timer);
+
+    document.getElementById("loginBox")
+        .classList.add("hidden");
+
+    document.getElementById("teacherLoginBox")
+        .classList.remove("hidden");
+
+}
+
+// =====================================
+// 8. KIỂM TRA MÃ GIÁO VIÊN
+// =====================================
+
+function verifyTeacher(){
+
+    const code = document
+        .getElementById("teacherCode")
+        .value
+        .trim();
+
+    if(code !== TEACHER_CODE){
+
+        alert("❌ Mã giáo viên không đúng!");
+
+        document.getElementById("teacherCode").value = "";
+
+        return;
+
+    }
+
+    document.getElementById("teacherLoginBox")
+        .classList.add("hidden");
+
+    document.getElementById("teacherBox")
+        .classList.remove("hidden");
+
+    renderScores();
+
+}
+
+// =====================================
+// 9. HIỂN THỊ BẢNG ĐIỂM
+// =====================================
+
+function renderScores(){
+
+    const data = getScores();
+
+    const table = document.getElementById("scoreTable");
+
+    document.getElementById("totalResults").innerText =
+        "📚 Tổng số lượt làm bài: " + data.length;
+
+    if(data.length === 0){
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="4">Chưa có kết quả nào.</td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    table.innerHTML = data.map((r,i)=>`
+
+        <tr>
+            <td>${i+1}</td>
+            <td>${r.name}</td>
+            <td>${r.score}</td>
+            <td>${r.time}</td>
+        </tr>
+
+    `).join("");
+
+}
+
+// =====================================
+// 10. XUẤT BẢNG ĐIỂM
+// =====================================
+
+function exportScores(){
+
+    const data = getScores();
+
+    if(data.length === 0){
+
+        alert("Chưa có dữ liệu để xuất!");
+
+        return;
+
+    }
+
+    const rows = [
+
+        ["STT","Học sinh","Điểm","Thời gian nộp"],
+
+        ...data.map((r,i)=>[
+            i+1,
+            r.name,
+            r.score,
+            r.time
+        ])
+
+    ];
+
+    const csv = "\uFEFF" + rows.map(row=>
+
+        row.map(value=>
+            '"' + String(value).replace(/"/g,'""') + '"'
+        ).join(",")
+
+    ).join("\r\n");
+
+    const blob = new Blob([csv],{
+        type:"text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "Bang_diem_TNTV2.csv";
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    URL.revokeObjectURL(url);
+
+}
+
+// =====================================
+// 11. QUAY VỀ TRANG ĐẦU
+// =====================================
+
+function backHome(){
+
+    clearInterval(timer);
+
+    document.getElementById("teacherBox")
+        .classList.add("hidden");
+
+    document.getElementById("teacherLoginBox")
+        .classList.add("hidden");
+
+    document.getElementById("loginBox")
+        .classList.remove("hidden");
+
+    document.getElementById("teacherCode").value = "";
+
+    document.getElementById("studentCode").value = "";
+
+}
+
+</script>
+
+</body>
+</html>
